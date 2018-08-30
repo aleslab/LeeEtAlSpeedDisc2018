@@ -1,47 +1,34 @@
 clearvars;
-cd /Users/Abigail/Documents/psychtoolboxProjects/psychMaster/Data %lab mac
+cd /Users/Abigail/Documents/Raw_Data_Files %check that this is going to the
+%directory where the data is stored
 
-participantCodes = {'AA' 'AB' 'AD' 'AG' 'AH'}; %'AE'  'AI' 'AL' = experiment 3
-% 'A' 'B' 'C' 'D' 'E' 'F' 'G' 'H' 'J' 'K' = experiment 1;
-%'M' 'O' 'Q' 'R' 'S' 'T' 'U' 'V' 'W' 'X' 'Y' 'AL' = experiment 2
+participantCodes = {'A' 'B' 'C' 'D' 'E' 'F' 'G' 'H' 'J' 'K'};
 ParOrNonPar = 2; %non-parametric bootstrap for all
 BootNo = 1000; %number of simulations for all bootstraps and goodness of fits
 
 for iParticipant = 1:length(participantCodes)
     
     currParticipantCode = cell2mat(participantCodes(iParticipant));
-    %experiment 1 conditions
-    %     conditionList = {'MoveLine_accelerating_depth_midspeed'; ...
-    %         'MoveLine_accelerating_depth_slow'; 'MoveLine_accelerating_lateral_midspeed'; ...
-    %         'MoveLine_accelerating_lateral_slow'; 'MoveLine_CRS_depth_midspeed'; ...
-    %         'MoveLine_CRS_depth_slow'; 'MoveLine_CRS_lateral_midspeed'; 'MoveLine_CRS_lateral_slow'};
     
-    %experiment 2 conditions
-    %     conditionList = {'MoveLine_accelerating_depth_midspeed'; ...
-    %         'MoveLine_accelerating_depth_slow'; 'MoveLine_accelerating_looming_midspeed'; ...
-    %         'MoveLine_accelerating_looming_slow'; 'MoveLine_accelerating_cd_midspeed'; ...
-    %         'MoveLine_accelerating_cd_slow'};
+    conditionList = {'MoveLine_accelerating_depth_midspeed'; ...
+        'MoveLine_accelerating_depth_slow'; 'MoveLine_accelerating_lateral_midspeed'; ...
+        'MoveLine_accelerating_lateral_slow'; 'MoveLine_CRS_depth_midspeed'; ...
+        'MoveLine_CRS_depth_slow'; 'MoveLine_CRS_lateral_midspeed'; 'MoveLine_CRS_lateral_slow'}; 
+    % the list of conditions to analyse data from
     
-    %experiment 3 conditions
-    conditionList = {'SpeedDisc_fixed_duration'; 'SpeedDisc_fixed_distance'};
-    
-    analysisType = {'speed_only'; 'speed_only_arcmin'; 'real_world_difference'; 'real_world_proportion_difference'}; %'real_world_change' 'speed_change_full', ...
-    %'speed_change_changepoint_arcmin', ... 'speed_change_full_arcmin' 'speed_change_changepoint'
+    analysisType = {'speed_change_full', 'speed_change_changepoint_arcmin','speed_change_full_arcmin', 'speed_change_changepoint'};
+    % the type or types of analysis to run (speed_change_changepoint is
+    % used in the main body of the paper, the other three are used in the
+    % appendix)
     
     for iAnalysis = 1:length(analysisType)
         currAnalysisType = cell2mat(analysisType(iAnalysis));
         for iCond = 1:length(conditionList)
             currCondition = cell2mat(conditionList(iCond));
             condAndParticipant = strcat(currCondition, '_', currParticipantCode);
-            
-            %experiment 1
-            %fileDir = strcat('/Users/Abigail/Documents/Experiment Data/Experiment 1/Participant_', currParticipantCode, '/', condAndParticipant, '_*');
-            
-            %experiment 2
-            %fileDir = strcat('/Users/Abigail/Documents/Experiment Data/Experiment 2/Participant_', currParticipantCode, '/', condAndParticipant, '_*');
-            
-            %experiment 3
-            fileDir = strcat('/Users/Abigail/Documents/Experiment Data/Experiment 3/Participant_', currParticipantCode, '/', condAndParticipant, '_*');
+
+            fileDir = strcat('/Users/Abigail/Documents/Raw_Data_Files', condAndParticipant, '_*'); 
+            %If no data files are found and collated, check that this is going to the correct directory
             
             filenames = dir(fileDir);
             filenames = {filenames.name}; %makes a cell of filenames from the same
@@ -79,29 +66,9 @@ for iParticipant = 1:length(participantCodes)
             allTrialNumbers = allTrialNumbers';
             %allCorrectPercentages = (condCorrectNumbers./allTrialNumbers); %creates a double of the percentage correct responses for every condition
             
-            if length(condCorrectNumbers) > 7 && length(condCorrectNumbers) == 9
-                
-                level8 = condCorrectNumbers(8);
-                
-                level9 = condCorrectNumbers(9);
-                
-                condCorrectNumbers = condCorrectNumbers(1:7);
-                
-                allTrialNumbers = allTrialNumbers(1:7);
-                
-            elseif length(condCorrectNumbers) > 7 && length(condCorrectNumbers) == 8
-                
-                level8 = condCorrectNumbers(8);
-                
-                level9 = 0;
-                
-                condCorrectNumbers = condCorrectNumbers(1:7);
-                
-                allTrialNumbers = allTrialNumbers(1:7);
-                
-            end
-            
             %% Specifying what the levels were in different types of analysis
+            %All x-axis values in this section are entered manually (have
+            %been calculated separately)
             
             %PROPORTION SPEED CHANGE AT POINT OF CHANGE
             
@@ -111,24 +78,20 @@ for iParticipant = 1:length(participantCodes)
                 
                 %midspeed accelerating conditions
                 if strcmp(currCondition, 'MoveLine_accelerating_depth_midspeed')...
-                        || strcmp(currCondition,'MoveLine_accelerating_lateral_midspeed')...
-                        || strcmp(currCondition, 'MoveLine_accelerating_cd_midspeed') ...
-                        || strcmp(currCondition, 'MoveLine_accelerating_looming_midspeed');
+                        || strcmp(currCondition,'MoveLine_accelerating_lateral_midspeed');
                     
-                    speedDiff = [0 0.22 0.40 0.55 0.67 0.77 0.86]; %2dp
+                    speedDiff = [0 0.22 0.40 0.55 0.67 0.77 0.86]; %2dp; x-axis for psychometric function
                     
                     %slow accelerating conditions
                 elseif strcmp(currCondition, 'MoveLine_accelerating_depth_slow')...
-                        || strcmp(currCondition,'MoveLine_accelerating_lateral_slow')...
-                        || strcmp(currCondition, 'MoveLine_accelerating_cd_slow')...
-                        || strcmp(currCondition, 'MoveLine_accelerating_looming_slow');
+                        || strcmp(currCondition,'MoveLine_accelerating_lateral_slow');
                     
-                    speedDiff = [0 0.22 0.40 0.54 0.67 0.77 0.86]; %2dp
+                    speedDiff = [0 0.22 0.40 0.54 0.67 0.77 0.86]; %2dp; x-axis for psychometric function
                     
                     %CRS depth conditions
                 elseif strcmp(currCondition, 'MoveLine_CRS_depth_midspeed');
                     
-                    speedDiff = [0 0.50 0.62 0.71 0.79 0.86 0.91]; %2dp
+                    speedDiff = [0 0.50 0.62 0.71 0.79 0.86 0.91]; %2dp; x-axis for psychometric function
                     
                     %slow and midspeed CRS lateral conditions
                 elseif strcmp(currCondition, 'MoveLine_CRS_depth_slow');
@@ -154,25 +117,15 @@ for iParticipant = 1:length(participantCodes)
                 
                 %midspeed accelerating conditions
                 if strcmp(currCondition, 'MoveLine_accelerating_depth_midspeed')...
-                        || strcmp(currCondition,'MoveLine_accelerating_lateral_midspeed')...
-                        || strcmp(currCondition, 'MoveLine_accelerating_cd_midspeed');
+                        || strcmp(currCondition,'MoveLine_accelerating_lateral_midspeed');
                     
                     speedDiff = [0 10.5 19.9 28.4 36.1 43.0 49.4];
                     
                     %slow accelerating conditions
                 elseif strcmp(currCondition, 'MoveLine_accelerating_depth_slow')...
-                        || strcmp(currCondition,'MoveLine_accelerating_lateral_slow')...
-                        || strcmp(currCondition, 'MoveLine_accelerating_cd_slow');
+                        || strcmp(currCondition,'MoveLine_accelerating_lateral_slow');
                     
                     speedDiff = [0 5.3 10.4 15.2 19.8 24.1 28.4];
-                    
-                elseif strcmp(currCondition, 'MoveLine_accelerating_looming_midspeed');
-                    
-                    speedDiff = [0 7.0 13.3 18.9 24.0 28.7 32.9];
-                    
-                elseif strcmp(currCondition, 'MoveLine_accelerating_looming_slow');
-                    
-                    speedDiff = [0 3.5 7.0 10.1 13.2 16.2 18.8];
                     
                     %CRS depth conditions
                 elseif strcmp(currCondition, 'MoveLine_CRS_depth_midspeed');
@@ -202,8 +155,7 @@ for iParticipant = 1:length(participantCodes)
                 
                 %midspeed accelerating conditions
                 if strcmp(currCondition, 'MoveLine_accelerating_depth_midspeed')...
-                        || strcmp(currCondition,'MoveLine_accelerating_lateral_midspeed')...
-                        || strcmp(currCondition, 'MoveLine_accelerating_cd_midspeed');
+                        || strcmp(currCondition,'MoveLine_accelerating_lateral_midspeed');
                     
                     Bs = 69.5;
                     As = 30.1;
@@ -224,8 +176,7 @@ for iParticipant = 1:length(participantCodes)
                     
                     %slow accelerating conditions
                 elseif strcmp(currCondition, 'MoveLine_accelerating_depth_slow')...
-                        || strcmp(currCondition,'MoveLine_accelerating_lateral_slow')...
-                        || strcmp(currCondition, 'MoveLine_accelerating_cd_slow');
+                        || strcmp(currCondition,'MoveLine_accelerating_lateral_slow');
                     
                     Bs = 27.2;
                     As = 18.0;
@@ -244,13 +195,6 @@ for iParticipant = 1:length(participantCodes)
                     
                     speedDiff = fullSlowIntervalChange;
                     
-                    %                 elseif strcmp(currCondition, 'MoveLine_accelerating_looming_midspeed');
-                    %
-                    %                     speedDiff = [];
-                    %
-                    %                 elseif strcmp(currCondition, 'MoveLine_accelerating_looming_slow');
-                    %
-                    %                     speedDiff = [];
                     
                     %CRS depth conditions
                 elseif strcmp(currCondition, 'MoveLine_CRS_depth_midspeed');
@@ -323,25 +267,15 @@ for iParticipant = 1:length(participantCodes)
                 
                 %midspeed accelerating conditions
                 if strcmp(currCondition, 'MoveLine_accelerating_depth_midspeed')...
-                        || strcmp(currCondition,'MoveLine_accelerating_lateral_midspeed')...
-                        || strcmp(currCondition, 'MoveLine_accelerating_cd_midspeed');
+                        || strcmp(currCondition,'MoveLine_accelerating_lateral_midspeed');
                     
                     speedDiff = [0 12.3 24.8 37.3 49.6 62.1 74.5];
                     
                     %slow accelerating conditions
                 elseif strcmp(currCondition, 'MoveLine_accelerating_depth_slow')...
-                        || strcmp(currCondition,'MoveLine_accelerating_lateral_slow')...
-                        || strcmp(currCondition, 'MoveLine_accelerating_cd_slow');
+                        || strcmp(currCondition,'MoveLine_accelerating_lateral_slow');
                     
                     speedDiff = [0 5.6 11.3 16.9 22.6 28.2 33.9];
-                    
-                elseif strcmp(currCondition, 'MoveLine_accelerating_looming_midspeed');
-                    
-                    speedDiff = [0 8.3 16.6 24.8 33.2 41.5 49.7];
-                    
-                elseif strcmp(currCondition, 'MoveLine_accelerating_looming_slow');
-                    
-                    speedDiff = [0 3.7 7.5 11.3 15.0 18.8 22.6];
                     
                 elseif strcmp(currCondition, 'MoveLine_CRS_depth_midspeed');
                     
@@ -361,64 +295,11 @@ for iParticipant = 1:length(participantCodes)
                     speedDiff = [0 10.1 15.5 20.7 25.7 30.7 35.5];
                     
                 end
-            elseif strcmp(currAnalysisType, 'real_world_change');
-                
-                xLabelTitle  = 'Speed change in the world (cm/s)';
-                
-                if strfind(currCondition, 'midspeed')
-                    
-                    speedDiff = [0 10 20 30 40 50 60];
-                    
-                elseif strfind(currCondition, 'slow')
-                    
-                    speedDiff = [0 5 10 15 20 25 30];
-                    
-                end
-                
-            elseif strcmp(currAnalysisType,'speed_only')
-                
-                xLabelTitle = 'Proportion speed difference relative to standard';
-                
-                if strfind(currCondition, 'fixed_duration')
-                    
-                    speedDiff = [0 0.15 0.26 0.36 0.44 0.51 0.57];
-                    
-                elseif strfind(currCondition, 'fixed_distance')
-                    
-                    speedDiff = [0 0.11 0.20 0.27 0.34 0.39 0.43];
-                    
-                end
-                
-            elseif strcmp(currAnalysisType, 'speed_only_arcmin')
-                
-                xLabelTitle = 'Speed difference relative to standard (arcmin/s)';
-                
-                if strfind(currCondition, 'fixed_duration')
-                    
-                    speedDiff = [0 6.6 13.6 21.5 30.1 39.6 50.4];
-                    
-                elseif strfind(currCondition, 'fixed_distance')
-                    
-                    speedDiff = [0 5.5 11.2 16.3 22.4 28.1 33.3];
-                    
-                end
-                
-                
-            elseif strcmp(currAnalysisType, 'real_world_difference')
-                
-                xLabelTitle  = 'Speed difference in the world relative to standard (cm/s)';
-                
-                speedDiff = [0 5 10 15 20 25 30];
-                
-                
-            elseif strcmp(currAnalysisType, 'real_world_proportion_difference')
-                
-                xLabelTitle  = 'Proportion speed difference in the world relative to standard (cm/s)';
-                
-                speedDiff = [0 0.11 0.2 0.27 0.33 0.38 0.43];
-                
+           
             end
             %% Psychometric function fitting adapted from PAL_PFML_Demo
+            %Fits cumulative normal psychometric functions to the data from
+            %each condition for each participant
             
             tic
             
@@ -504,14 +385,12 @@ for iParticipant = 1:length(participantCodes)
             end
             
             
-            %%
+            %% Collating the data to then be saved
+            
             stimAt75PercentCorrect = PAL_CumulativeNormal(paramsValues, 0.75, 'Inverse');
             slopeAt75PercentThreshold = PAL_CumulativeNormal(paramsValues, stimAt75PercentCorrect, 'Derivative');
-            % this slope value might not be particularly close to the beta
-            %value that comes out of the paramsValues things as with the
-            %cumulative normal function the beta value is the inverse of
-            %the standard deviation, which is related/proportional to the
-            %slope but not actually the slope.
+            %Here the beta value is the inverse of the standard deviation, 
+            %which is related/proportional to the slope but is not actually the slope.
             
             for iBoot = 1:BootNo
                 boot75Threshold(iBoot) = PAL_CumulativeNormal(paramsSim(iBoot,:), 0.75, 'Inverse');
