@@ -27,7 +27,7 @@ for iParticipant = 1:length(participantCodes)
             currCondition = cell2mat(conditionList(iCond));
             condAndParticipant = strcat(currCondition, '_', currParticipantCode);
 
-            fileDir = strcat('/Users/Abigail/Documents/Raw_Data_Files', condAndParticipant, '_*'); 
+            fileDir = strcat('/Users/Abigail/Documents/Raw_Data_Files/', condAndParticipant, '_*'); 
             %If no data files are found and collated, check that this is going to the correct directory
             
             filenames = dir(fileDir);
@@ -413,8 +413,6 @@ for iParticipant = 1:length(participantCodes)
             psychInfo(iCond).betaCI = slopeCI;
             psychInfo(iCond).thresholdSE = thresholdSE;
             psychInfo(iCond).slopeSE = slopeSE;
-            psychInfo(iCond).level8 = level8;
-            psychInfo(iCond).level9 = level9;
             %the original parameters, standard errors from bootstrapping
             %and values from goodness of fit (dev and pdev).
             psychInfo(iCond).condParamsValues = paramsValues;
