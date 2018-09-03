@@ -1,6 +1,6 @@
 clearvars;
-cd /Users/Abigail/Documents/Raw_Data_Files %check that this is going to the
-%directory where the data is stored
+dataDir = uigetdir();
+cd(dataDir)
 
 participantCodes = {'A' 'B' 'C' 'D' 'E' 'F' 'G' 'H' 'J' 'K'};
 ParOrNonPar = 2; %non-parametric bootstrap for all
@@ -27,7 +27,7 @@ for iParticipant = 1:length(participantCodes)
             currCondition = cell2mat(conditionList(iCond));
             condAndParticipant = strcat(currCondition, '_', currParticipantCode);
 
-            fileDir = strcat('/Users/Abigail/Documents/Raw_Data_Files/', condAndParticipant, '_*'); 
+            fileDir = fullfile(dataDir,[condAndParticipant, '_*']); 
             %If no data files are found and collated, check that this is going to the correct directory
             
             filenames = dir(fileDir);
