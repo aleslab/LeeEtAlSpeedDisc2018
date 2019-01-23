@@ -18,8 +18,8 @@ for iParticipant = 1:length(participantCodes)
     
     analysisType = {'speed_change_full', 'speed_change_changepoint_arcmin','speed_change_full_arcmin', 'speed_change_changepoint'};
     % the type or types of analysis to run (speed_change_changepoint is
-    % used in the main body of the paper, the other three are used in the
-    % appendix)
+    % used in the main body of the paper, the other three are not used in 
+    %the paper as they result in more biased values)
     
     for iAnalysis = 1:length(analysisType)
         currAnalysisType = cell2mat(analysisType(iAnalysis));
